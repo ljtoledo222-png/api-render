@@ -4,65 +4,49 @@ import fs from "fs";
 const app = express();
 app.use(express.json());
 
-// ==========================
-//   1. GUARDAR DATOS
-// ==========================
+// ===========================
+//   1. Guardar datos
+// ===========================
 app.post("/guardar", (req, res) => {
     const data = req.body;
 
-    // Guardar datos en datos.json
-    fs.writeFileSync("datos.json", JSON.stringify(data, null, 2));
+    fs.writeFileSync("datos.json", JSON.stringify(data, null, 4));
 
-    res.json({
+    return res.json({
         status: "ok",
-        mensaje: "Datos guardados correctamente",
+        mensaje: "Datos guardados",
         datos: data
     });
 });
 
-// ==========================
-//   2. MOSTRAR DATOS EN LA WEB
-// ==========================
+// ===========================
+//   2. Ver datos en la web
+// ===========================
 app.get("/", (req, res) => {
     let datos = {};
 
-    try {
-        if (fs.existsSync("datos.json")) {
-            const contenido = fs.readFileSync("datos.json", "utf8");
-            datos = JSON.parse(contenido);
-        }
-    } catch (e) {
-        datos = { error: "No se pudo leer datos.json" };
+    if (fs.existsSync("datos.json")) {
+        const contenido = fs.readFileSync("datos.json", "utf8");
+        datos = JSON.parse(contenido);
     }
 
     res.send(`
         <html>
             <head>
-                <meta charset="utf-8" />
-                <title>Datos Recibidos</title>
+                <meta charset="utf-8">
+                <title>Datos Guardados</title>
                 <style>
-                    body { 
-                        background: #111; 
-                        color: #0f0; 
-                        font-family: monospace; 
-                        padding: 20px; 
-                    }
-                    pre { 
-                        background: #000; 
-                        padding: 20px; 
-                        border-radius: 10px;
-                        border: 1px solid #0f0;
-                    }
+                    body { background:#111; color:#0f0; font-family:monospace; padding:30px; }
+                    pre { background:#000; padding:20px; border-radius:10px; border:1px solid #0f0; }
                 </style>
             </head>
             <body>
-                <h1>📦 Datos recibidos</h1>
+                <h1>📦 Datos Recibidos</h1>
                 <pre>${JSON.stringify(datos, null, 4)}</pre>
             </body>
         </html>
     `);
 });
 
-// Render usa PORT dinámico
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log("API lista en puerto " + port));
+// Puerto de Replit
+app.listen(3000, () => console.log("API lista en puerto 3000"));
